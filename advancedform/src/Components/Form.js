@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
+import Schema from './Schema'
 //styling
 const MainDiv = styled.div`
 padding:5px;
@@ -41,7 +42,14 @@ export default function Form(){
     }
 
     //schema check
-
+    useEffect(() => {
+        Schema.isValid(formValues)
+            .then(valid => {
+                setDisabled(!valid)
+            }).catch(err => {
+                console.log(err)
+            })
+    }, [formValues])
 
 
     return(
@@ -65,7 +73,7 @@ export default function Form(){
                     </MLabel>
 
                     <MLabel>
-                        <input type='submit'/>
+                        <input disabled={disabled} type='submit'/>
                     </MLabel>
                 </form>
             </MainDiv>
