@@ -1,6 +1,9 @@
 import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import Schema from './Schema'
+import axios from 'axios'
+import * as yup from 'yup'
+import User from './User'
 //styling
 const MainDiv = styled.div`
 padding:5px;
@@ -19,15 +22,31 @@ padding: 2px;
 margin:.3rem;
 `
 
+const ERRDIV = styled.div`
+font-size:1.7rem;
+display:flex;
+padding: 2px;
+margin:.3rem;
+color:red;
+`
+
 export default function Form(){
     //Setting initail values for the form
     const initalTValue = true
+    const initailFormValues = {
+    name: "",
+    email: "",
+    password: "",
+    tos: false,
+    }
+    const [users, setUsers] = useState([])
     const [disabled, setDisabled] = useState(initalTValue)
-    const [formValues, setFormValues] = useState({
-        name: '',
-        email: '',
-        password: '',
-        tos: false,
+    const [formValues, setFormValues] = useState(initailFormValues)
+    const [errors, setErrors] = useState({
+        name: "",
+        email: "",
+        password: "",
+        tos: "",
     })
 
     //on change and on submit functions
@@ -35,10 +54,30 @@ export default function Form(){
         const {checked, name, type, value} = e.target
         const valueToUse = type === 'checkbox' ? checked : value
         setFormValues({...formValues, [name]: valueToUse})
+        hadleSetErrors(name, valueToUse)
     }
     const submit = e => {
         e.preventDefault()
         console.log(formValues)
+        const newUser = {
+            user: formValues.name,
+            email: formValues.email,
+            password: formValues.password,
+        }
+        axios.post("https://reqres.in/api/users", newUser)
+            .then(res => {
+                setUsers([...users, res.data])
+                setFormValues(initailFormValues)
+            }).catch(err => {
+                console.log('ERROR: ', (err))
+            })
+    }
+
+    //hadeling the errors
+    const hadleSetErrors = (name, value) => {
+        yup.reach(Schema, name).validate(value)
+            .then(() => setErrors({...errors, [name]: ''}))
+            .catch(err => {setErrors({...errors, [name]: err.errors[0]})})
     }
 
     //schema check
@@ -56,17 +95,33 @@ export default function Form(){
         <div>
             <MainDiv>
                 <form onSubmit={submit}>
+                    <ERRDIV>
+                        {errors.name.length === 0 ? null : <pre>{errors.name}</pre>}
+                    </ERRDIV>
+
                     <MLabel>Name 
                         <input value={formValues.name} name='name' type='text' onChange={change}/>
                      </MLabel>
+
+                     <ERRDIV>
+                        {errors.email.length === 0 ? null : <pre>{errors.email}</pre>}
+                    </ERRDIV>
 
                      <MLabel>Email 
                         <input value={formValues.email} name='email' type='text' onChange={change}/>
                     </MLabel>
 
+                    <ERRDIV>
+                        {errors.password.length === 0 ? null : <pre>{errors.password}</pre>}
+                    </ERRDIV>
+
                     <MLabel>Password 
                         <input value={formValues.password} name='password' type='text' onChange={change}/>
                     </MLabel>
+
+                    <ERRDIV>
+                        {errors.tos.length === 0 ? null : <pre>{errors.tos}</pre>}
+                    </ERRDIV>
 
                     <MLabel>Terms of service
                         <input checked={formValues.tos} value={formValues.tos} name='tos' type='checkbox' onChange={change}/>
@@ -75,8 +130,14 @@ export default function Form(){
                     <MLabel>
                         <input disabled={disabled} type='submit'/>
                     </MLabel>
+                    <MLabel>
+                        
+                    </MLabel>
                 </form>
             </MainDiv>
+            <MLabel>
+                {users.length === 0 ? null : <p>{JSON.stringify(users)}</p>}
+            </MLabel>
         </div>
     )
 }
