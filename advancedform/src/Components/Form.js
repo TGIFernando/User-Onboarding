@@ -9,11 +9,12 @@ const MainDiv = styled.div`
 padding:5px;
 margin: 2rem 40vh;
 height: 70vh;
-border:2px solid red;
 display:flex;
 justify-content:center;
 align-items:center;
 flex-direction: column;
+background-color: #42bfdd;
+box-shadow:10px 10px 5px #1C829C;
 `
 const MLabel = styled.label`
 font-size:2rem;
@@ -58,14 +59,14 @@ export default function Form(){
     }
     const submit = e => {
         e.preventDefault()
-        console.log(formValues)
         const newUser = {
-            user: formValues.name,
-            email: formValues.email,
-            password: formValues.password,
+            name: formValues.name.trim(),
+            email: formValues.email.trim(),
+            password: formValues.password.trim(),
         }
         axios.post("https://reqres.in/api/users", newUser)
             .then(res => {
+                // setUsers(...users, [res.data])
                 setUsers([...users, res.data])
                 setFormValues(initailFormValues)
             }).catch(err => {
@@ -90,7 +91,7 @@ export default function Form(){
             })
     }, [formValues])
 
-
+    console.log('user: ',users)
     return(
         <div>
             <MainDiv>
@@ -116,14 +117,14 @@ export default function Form(){
                     </ERRDIV>
 
                     <MLabel>Password 
-                        <input value={formValues.password} name='password' type='text' onChange={change}/>
+                        <input value={formValues.password} name='password' type='password' onChange={change}/>
                     </MLabel>
 
                     <ERRDIV>
                         {errors.tos.length === 0 ? null : <pre>{errors.tos}</pre>}
                     </ERRDIV>
 
-                    <MLabel>Terms of service
+                    <MLabel>Sell Data
                         <input checked={formValues.tos} value={formValues.tos} name='tos' type='checkbox' onChange={change}/>
                     </MLabel>
 
@@ -136,7 +137,7 @@ export default function Form(){
                 </form>
             </MainDiv>
             <MLabel>
-                {users.length === 0 ? null : <p>{JSON.stringify(users)}</p>}
+                {users.map(data => <User name={data.name} email={data.email}/>)}
             </MLabel>
         </div>
     )
