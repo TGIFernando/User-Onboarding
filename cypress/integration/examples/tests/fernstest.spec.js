@@ -11,6 +11,7 @@ describe('Form App', () => {
     const emailInput = () => cy.get('input[name="email"]')
     const passInput = () => cy.get('input[name="password"]')
     const checkInput = () => cy.get('input[name="tos"]')
+    const subInput = () => cy.get('input[name="submit"]')
     
     const nameTest = () => {it('Tests name input', () => {
         nameInput().should('have.value', '')
@@ -39,6 +40,15 @@ describe('Form App', () => {
         checkInput().should('have.value', 'true')
     })}
     checkTest()
+    
+    const formTest = () => {it('Test the form', () => {
+        nameInput().type('Example Name')
+        emailInput().type('Email@example.com')
+        passInput().type('Password')
+        checkInput().click()
+        subInput().click()
+    })}
+    formTest()
 
 
 

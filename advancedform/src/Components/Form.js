@@ -91,7 +91,7 @@ export default function Form(){
             })
     }, [formValues])
 
-    console.log('user: ',users)
+    
     return(
         <div>
             <MainDiv>
@@ -129,7 +129,7 @@ export default function Form(){
                     </MLabel>
 
                     <MLabel>
-                        <input disabled={disabled} type='submit'/>
+                        <input name='submit' disabled={disabled} type='submit'/>
                     </MLabel>
                     <MLabel>
                         
@@ -137,7 +137,7 @@ export default function Form(){
                 </form>
             </MainDiv>
             <MLabel>
-                {users.map(data => <User name={data.name} email={data.email}/>)}
+                {users.map(data => <User name={data.name} email={data.email} key={data.id}/>)}
             </MLabel>
         </div>
     )
