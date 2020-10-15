@@ -9,7 +9,7 @@ describe('Form App', () => {
 
     const nameInput = () => cy.get('input[name="name"]')
     const emailInput = () => cy.get('input[name="email"]')
-    const passInput = () => cy.get('input[name="passsword"]')
+    const passInput = () => cy.get('input[name="password"]')
     
     it('Tests name input', () => {
         nameInput().should('have.value', '')
@@ -21,6 +21,12 @@ describe('Form App', () => {
         emailInput().should('have.value', '')
         emailInput().type('Email@example.com')
         emailInput().should('have.value', 'Email@example.com')
+    })
+
+    it('Tests password input', () => {
+        passInput().should('have.value', '')
+        passInput().type('Password')
+        passInput().should('have.value', 'Password')
     })
 
 
