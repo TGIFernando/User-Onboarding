@@ -50,6 +50,17 @@ describe('Form App', () => {
     })}
     formTest()
 
+    const checkValidation = () => {it('Tests form validation', () => {
+        nameInput().type('Example Name')
+        emailInput().type('Emailexamplecom')
+        passInput().type('Pswrd')
+        checkInput().click()
+        nameInput().clear()
+        checkInput().click()
+        subInput().should('be.disabled')
+    })}
+    checkValidation()
+
 
 
 
