@@ -17,6 +17,12 @@ describe('Form App', () => {
         nameInput().should('have.value', 'Example Name')
     })
 
+    it('Tests email input', () => {
+        emailInput().should('have.value', '')
+        emailInput().type('Email@example.com')
+        emailInput().should('have.value', 'Email@example.com')
+    })
+
 
 
 
